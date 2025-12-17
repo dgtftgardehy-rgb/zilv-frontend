@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, isSameDay } from 'date-fns'
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday } from 'date-fns'
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -26,8 +26,8 @@ function App() {
       setHabits([...habits, {
         name: newName,
         type: newType,
-        checkedDates: [], // 打卡日期
-        records: {} // 数字记录 {date: value}
+        checkedDates: [],
+        records: {}
       }])
       setNewName('')
     }
@@ -70,31 +70,40 @@ function App() {
     const days = eachDayOfInterval({ start: monthStart, end: monthEnd })
 
     return (
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '5px', margin: '20px 0' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', margin: '20px 0' }}>
         {['日', '一', '二', '三', '四', '五', '六'].map(day => (
-          <div key={day} style={{ textAlign: 'center', fontWeight: 'bold' }}>{day}</div>
+          <div key={day} style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '0.9em' }}>{day}</div>
         ))}
         {days.map(day => {
           const dateStr = format(day, 'yyyy-MM-dd')
           const checked = habit.checkedDates.includes(dateStr)
           const value = habit.records[dateStr]
+          const isTodayDate = isToday(day)
+
           return (
             <div
               key={dateStr}
               onClick={() => setSelectedHabit({habitIndex: habits.indexOf(habit), dateStr})}
               style={{
                 aspectRatio: '1',
-                background: checked ? '#28a745' : '#6c757d',
+                background: checked ? '#28a745' : '#495057',
                 color: 'white',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderRadius: '8px',
-                cursor: 'pointer'
+                borderRadius: '12px',
+                cursor: 'pointer',
+                position: 'relative',
+                border: isTodayDate ? '3px solid #ffd43b' : 'none',
+                fontWeight: isTodayDate ? 'bold' : 'normal'
               }}
             >
-              {day.getDate()}
-              {value > 0 && <small>{value}</small>}
+              <span style={{ fontSize: '1em' }}>{day.getDate()}</span>
+              {value > 0 && (
+                <span style={{ position: 'absolute', bottom: '4px', right: '4px', fontSize: '0.7em', background: 'rgba(0,0,0,0.5)', padding: '2px 4px', borderRadius: '4px' }}>
+                  {value}
+                </span>
+              )}
             </div>
           )
         })}
@@ -103,7 +112,7 @@ function App() {
   }
 
   return (
-    <div style={{ padding: '20px', color: 'white', minHeight: '100vh' }}>
+    <div style={{ padding: '20px', color: 'white', minHeight: '100vh', position: 'relative' }}>
       <h1 style={{ textAlign: 'center' }}>🛡️ 自律守护者</h1>
       {loggedIn ? (
         <div>
@@ -151,6 +160,17 @@ function App() {
         </div>
       )}
       <p style={{ textAlign: 'center' }}>{message}</p>
+
+      {/* 广告位固定底部 */}
+      <div style={{ position: 'fixed', bottom: '0', left: '0', right: '0', background: 'rgba(0,0,0,0.8)', padding: '10px', textAlign: 'center' }}>
+        <p style={{ margin: '0' }}>广告位招租 · 解锁会员去除广告</p>
+        <button onClick={() => alert('会员功能即将上线')} style={{ background: '#ffeb3b', color: '#333', border: 'none', padding: '8px 16px', borderRadius: '20px' }}>
+          升级会员（每月10元）
+        </button>
+        <button onClick={(e) => e.target.parentElement.style.display = 'none'} style={{ position: 'absolute', right: '10px', top: '10px', background: 'none', border: 'none', color: 'white', fontSize: '20px' }}>
+          ×
+        </button>
+      </div>
     </div>
   )
 }
