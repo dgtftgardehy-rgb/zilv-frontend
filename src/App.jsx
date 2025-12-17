@@ -23,7 +23,7 @@ function App() {
   }
 
   const upgradePremium = () => {
-    alert('会员支付功能即将上线！（真实支付后去除广告）')
+    alert('会员支付即将上线！（真实支付后去除广告）')
     setIsPremium(true) // 临时升级
   }
 
@@ -124,7 +124,7 @@ function App() {
         <div>
           <h2 style={{ textAlign: 'center' }}>欢迎，{email}！ {isPremium && '💎 高级会员'}</h2>
 
-          <div style={{ margin: '20px 0' }}>
+          <div style={{ margin: '20px 0', textAlign: 'center' }}>
             <input placeholder="习惯名称" value={newName} onChange={e => setNewName(e.target.value)} style={{ padding: '10px' }} />
             <select onChange={e => setNewType(e.target.value)} style={{ padding: '10px' }}>
               <option value="check">普通打卡</option>
@@ -136,24 +136,26 @@ function App() {
 
           {habits.map((habit, index) => (
             <div key={index} style={{ background: 'rgba(255,255,255,0.2)', padding: '20px', margin: '20px 0', borderRadius: '15px' }}>
-              <h3>{habit.name} 🔥 {getStreak(habit.checkedDates)} 天</h3>
-              {habit.type === 'special' && <p style={{ fontSize: '0.9em' }}>健康提示：保持规律排精有利于身心健康</p>}
+              <h3 style={{ textAlign: 'center' }}>{habit.name} 🔥 {getStreak(habit.checkedDates)} 天</h3>
+              {habit.type === 'special' && <p style={{ fontSize: '0.9em', textAlign: 'center' }}>健康提示：保持规律排精有利于身心健康</p>}
               {renderCalendar(habit)}
               {selectedHabit && selectedHabit.habitIndex === index && (
-                <div>
+                <div style={{ textAlign: 'center' }}>
                   <p>为 {selectedHabit.dateStr} 打卡</p>
-                  {habit.type === 'number' && <input placeholder="输入数字（如公里数）" value={inputValue} onChange={e => setInputValue(e.target.value)} />}
+                  {habit.type === 'number' && <input placeholder="输入数字（如公里数）" value={inputValue} onChange={e => setInputValue(e.target.value)} style={{ padding: '10px' }} />}
                   <button onClick={() => {
                     toggleCheck(selectedHabit.habitIndex, selectedHabit.dateStr)
                     setSelectedHabit(null)
-                  }}>确认</button>
+                  }} style={{ padding: '10px' }}>确认</button>
                 </div>
               )}
             </div>
           ))}
+          {habits.length === 0 && <p style={{ textAlign: 'center' }}>添加第一个习惯开始坚持吧！</p>}
         </div>
       ) : (
         <div style={{ textAlign: 'center', marginTop: '100px' }}>
+          <p>邮箱登录（临时测试）</p>
           <input type="email" placeholder="输入邮箱" value={email} onChange={e => setEmail(e.target.value)} style={{ padding: '12px', width: '80%' }} />
           <br /><br />
           <button onClick={() => setMessage('验证码已发送（临时用123456）')} style={{ padding: '12px' }}>
