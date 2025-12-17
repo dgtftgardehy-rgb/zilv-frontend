@@ -6,6 +6,7 @@ function App() {
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [message, setMessage] = useState('')
+  const [isPremium, setIsPremium] = useState(false) // 会员状态
   const [habits, setHabits] = useState([])
   const [newName, setNewName] = useState('')
   const [newType, setNewType] = useState('check')
@@ -19,6 +20,11 @@ function App() {
     } else {
       setMessage('验证码错误（临时用123456）')
     }
+  }
+
+  const upgradePremium = () => {
+    alert('会员支付功能即将上线！（真实支付后去除广告）')
+    setIsPremium(true) // 临时升级
   }
 
   const addHabit = () => {
@@ -116,7 +122,7 @@ function App() {
       <h1 style={{ textAlign: 'center' }}>🛡️ 自律守护者</h1>
       {loggedIn ? (
         <div>
-          <h2 style={{ textAlign: 'center' }}>欢迎，{email}！</h2>
+          <h2 style={{ textAlign: 'center' }}>欢迎，{email}！ {isPremium && '💎 高级会员'}</h2>
 
           <div style={{ margin: '20px 0' }}>
             <input placeholder="习惯名称" value={newName} onChange={e => setNewName(e.target.value)} style={{ padding: '10px' }} />
@@ -161,16 +167,18 @@ function App() {
       )}
       <p style={{ textAlign: 'center' }}>{message}</p>
 
-      {/* 广告位固定底部 */}
-      <div style={{ position: 'fixed', bottom: '0', left: '0', right: '0', background: 'rgba(0,0,0,0.8)', padding: '10px', textAlign: 'center' }}>
-        <p style={{ margin: '0' }}>广告位招租 · 解锁会员去除广告</p>
-        <button onClick={() => alert('会员功能即将上线')} style={{ background: '#ffeb3b', color: '#333', border: 'none', padding: '8px 16px', borderRadius: '20px' }}>
-          升级会员（每月10元）
-        </button>
-        <button onClick={(e) => e.target.parentElement.style.display = 'none'} style={{ position: 'absolute', right: '10px', top: '10px', background: 'none', border: 'none', color: 'white', fontSize: '20px' }}>
-          ×
-        </button>
-      </div>
+      {/* 广告位 - 会员去除 */}
+      {!isPremium && (
+        <div style={{ position: 'fixed', bottom: '0', left: '0', right: '0', background: 'rgba(0,0,0,0.8)', padding: '10px', textAlign: 'center' }}>
+          <p style={{ margin: '0' }}>广告位招租 · 解锁会员去除广告</p>
+          <button onClick={upgradePremium} style={{ background: '#ffeb3b', color: '#333', border: 'none', padding: '8px 16px', borderRadius: '20px' }}>
+            升级会员（每月10元）
+          </button>
+          <button onClick={(e) => e.target.parentElement.style.display = 'none'} style={{ position: 'absolute', right: '10px', top: '10px', background: 'none', border: 'none', color: 'white', fontSize: '20px' }}>
+            ×
+          </button>
+        </div>
+      )}
     </div>
   )
 }
