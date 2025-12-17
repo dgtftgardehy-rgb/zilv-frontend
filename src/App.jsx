@@ -1,46 +1,72 @@
 import { useState } from 'react'
-import axios from 'axios'
 
 function App() {
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [message, setMessage] = useState('')
   const [loggedIn, setLoggedIn] = useState(false)
+  const [habits, setHabits] = useState([]) // 临时本地习惯
+  const [newHabit, setNewHabit] = useState('')
 
-  // 临时后端（等后端做好再换）
-  const BACKEND_URL = 'https://example.com' // 先占位，功能开发中用本地状态
-
-  const sendCode = async () => {
-    // 临时模拟发送（真实后端做好再连）
-    setMessage('验证码已发送（模拟，真实功能即将上线）')
+  const sendCode = () => {
+    setMessage('验证码已发送！（临时模拟，用123456登录）')
   }
 
   const verify = () => {
-    if (code === '123456') { // 临时验证码123456
+    if (code === '123456') {
       setLoggedIn(true)
-      setMessage('登录成功！欢迎回来')
+      setMessage('登录成功！')
     } else {
-      setMessage('验证码错误（临时用123456测试）')
+      setMessage('验证码错误（临时用123456）')
     }
   }
 
+  const addHabit = () => {
+    if (newHabit.trim()) {
+      setHabits([...habits, { name: newHabit, streak: 0 }])
+      setNewHabit('')
+    }
+  }
+
+  const checkIn = (index) => {
+    const updated = [...habits]
+    updated[index].streak += 1
+    setHabits(updated)
+  }
+
   return (
-    <div style={{ textAlign: 'center', color: 'white', padding: '40px' }}>
+    <div style={{ textAlign: 'center', color: 'white', padding: '20px', minHeight: '100vh' }}>
       <h1>🛡️ 自律守护者</h1>
       {loggedIn ? (
         <div>
-          <h2>欢迎回来，{email}！</h2>
-          <p>打卡主功能开发中，很快上线～</p>
+          <h2>欢迎，{email}！</h2>
+          <input 
+            placeholder="添加新习惯（如早起、健身）" 
+            value={newHabit} 
+            onChange={(e) => setNewHabit(e.target.value)} 
+            style={{ padding: '10px', width: '80%', margin: '10px' }} 
+          />
+          <button onClick={addHabit} style={{ padding: '10px' }}>添加</button>
+          <div style={{ marginTop: '30px' }}>
+            <h3>我的习惯</h3>
+            {habits.map((habit, index) => (
+              <div key={index} style={{ margin: '20px', background: 'rgba(255,255,255,0.2)', padding: '15px', borderRadius: '10px' }}>
+                <p>{habit.name} 🔥 {habit.streak} 天</p>
+                <button onClick={() => checkIn(index)}>今天打卡</button>
+              </div>
+            ))}
+            {habits.length === 0 && <p>还没有习惯，添加一个开始吧！</p>}
+          </div>
         </div>
       ) : (
         <div>
-          <p>用邮箱登录，数据永久保存</p>
+          <p>邮箱登录（临时测试）</p>
           <input 
             type="email" 
             placeholder="输入邮箱" 
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
-            style={{ padding: '12px', width: '300px', margin: '10px' }} 
+            style={{ padding: '12px', width: '80%', margin: '10px' }} 
           />
           <br />
           <button onClick={sendCode} style={{ padding: '12px 24px', margin: '10px' }}>
@@ -48,10 +74,10 @@ function App() {
           </button>
           <br />
           <input 
-            placeholder="输入验证码（临时123456）" 
+            placeholder="验证码（临时123456）" 
             value={code} 
             onChange={(e) => setCode(e.target.value)} 
-            style={{ padding: '12px', width: '300px', margin: '10px' }} 
+            style={{ padding: '12px', width: '80%', margin: '10px' }} 
           />
           <br />
           <button onClick={verify} style={{ padding: '12px 24px', margin: '10px' }}>
@@ -59,7 +85,7 @@ function App() {
           </button>
         </div>
       )}
-      <p style={{ marginTop: '30px' }}>{message}</p>
+      <p>{message}</p>
     </div>
   )
 }
